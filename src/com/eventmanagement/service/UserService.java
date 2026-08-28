@@ -11,9 +11,6 @@ public interface UserService {
 
     void updateProfile(int userId, String name, String phone) throws UserNotFoundException, ValidationException;
 
-    void changePassword(int userId, String oldPassword, String newPassword)
-            throws UserNotFoundException, ValidationException;
-
     User getUserById(int userId) throws UserNotFoundException;
 
     List<User> getAllUsersByRole(Role role);

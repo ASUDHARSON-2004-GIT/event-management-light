@@ -38,23 +38,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(int userId, String oldPassword, String newPassword)
-            throws UserNotFoundException, ValidationException {
-
-        User user = getUserById(userId);
-
-        if (!PasswordUtil.matches(oldPassword, user.getPassword())) {
-            throw new ValidationException("Current password is incorrect.");
-        }
-        if (ValidationUtil.isEmpty(newPassword)) {
-            throw new ValidationException("New password cannot be empty.");
-        }
-
-        user.setPassword(PasswordUtil.hashPassword(newPassword));
-        userRepository.save(user);
-    }
-
-    @Override
     public User getUserById(int userId) throws UserNotFoundException {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("No user found with id " + userId));

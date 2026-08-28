@@ -296,7 +296,56 @@ public class AdminController {
     }
 
     private void viewSystemReport() {
-        String report = reportService.generateSystemReport();
-        consoleHelper.printLine(report);
+        boolean stayInReportMenu = true;
+        while (stayInReportMenu) {
+            consoleHelper.printHeading("ADMIN REPORTS");
+            consoleHelper.printLine("1. View User Report");
+            consoleHelper.printLine("2. View Organizer Report");
+            consoleHelper.printLine("3. View Overall User Report");
+            consoleHelper.printLine("4. View Overall Organizer Report");
+            consoleHelper.printLine("5. View Overall System Report");
+            consoleHelper.printLine("6. Back");
+
+            int choice = consoleHelper.readInt("Enter your choice: ");
+
+            try {
+                switch (choice) {
+                    case 1:
+                        int userId = consoleHelper.readInt("Enter Customer ID: ");
+                        String userReport = reportService.generateUserReport(userId);
+                        consoleHelper.printLine(userReport);
+                        break;
+                    case 2:
+                        int organizerId = consoleHelper.readInt("Enter Organizer ID: ");
+                        consoleHelper.printLine("");
+                        consoleHelper.printLine("Report:");
+                        consoleHelper.printLine("");
+                        String organizerReport = reportService.generateOrganizerReport(organizerId);
+                        consoleHelper.printLine(organizerReport);
+                        break;
+                    case 3:
+                        String overallUserReport = reportService.generateOverallUserReport();
+                        consoleHelper.printLine(overallUserReport);
+                        break;
+                    case 4:
+                        String overallOrganizerReport = reportService.generateOverallOrganizerReport();
+                        consoleHelper.printLine(overallOrganizerReport);
+                        break;
+                    case 5:
+                        String overallSystemReport = reportService.generateSystemReport();
+                        consoleHelper.printLine(overallSystemReport);
+                        break;
+                    case 6:
+                        stayInReportMenu = false;
+                        break;
+                    default:
+                        consoleHelper.printLine("Invalid choice, please try again.");
+                }
+            } catch (UserNotFoundException e) {
+                consoleHelper.printLine(e.getMessage());
+            } catch (Exception e) {
+                consoleHelper.printLine("An error occurred: " + e.getMessage());
+            }
+        }
     }
 }
