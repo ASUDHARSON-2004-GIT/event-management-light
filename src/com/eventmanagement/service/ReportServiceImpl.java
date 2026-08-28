@@ -103,51 +103,6 @@ public class ReportServiceImpl implements ReportService {
         return report.toString();
     }
 
-    private String formatRupee(double amount, boolean showDecimals) {
-        long value = (long) amount;
-        long paise = Math.round((amount - value) * 100);
-        if (paise >= 100) {
-            value += paise / 100;
-            paise = paise % 100;
-        }
-        if (paise < 0) {
-            paise = -paise;
-        }
-        
-        String valStr = String.valueOf(Math.abs(value));
-        StringBuilder sb = new StringBuilder();
-        int len = valStr.length();
-        
-        if (len <= 3) {
-            sb.append(valStr);
-        } else {
-            String lastThree = valStr.substring(len - 3);
-            String remaining = valStr.substring(0, len - 3);
-            
-            StringBuilder remSb = new StringBuilder();
-            int remLen = remaining.length();
-            int count = 0;
-            for (int i = remLen - 1; i >= 0; i--) {
-                remSb.append(remaining.charAt(i));
-                count++;
-                if (count == 2 && i > 0) {
-                    remSb.append(",");
-                    count = 0;
-                }
-            }
-            sb.append(remSb.reverse()).append(",").append(lastThree);
-        }
-        
-        if (amount < 0) {
-            sb.insert(0, "-");
-        }
-        
-        if (showDecimals) {
-            sb.append(String.format(".%02d", paise));
-        }
-        
-        return "\u20B9" + sb.toString();
-    }
 
     @Override
     public String generateUserReport(int userId) throws UserNotFoundException {
@@ -253,7 +208,7 @@ public class ReportServiceImpl implements ReportService {
         report.append("Completed Events  : ").append(completedCount).append("\n");
         report.append("Cancelled Events  : ").append(cancelledCount).append("\n\n");
         report.append("---------------- Revenue Summary ---------------\n\n");
-        report.append("Total Revenue     : ").append(formatRupee(totalRevenue, true)).append("\n\n");
+        report.append("Total Revenue     : ").append(String.format("%.2f", totalRevenue)).append("\n\n");
         report.append("---------------- Event Performance -------------\n\n");
         report.append(String.format("%-10s %-22s %-10s %-7s %s%n", "Event ID", "Event Name", "Bookings", "Seats", "Revenue"));
         report.append("----------------------------------------------------------------\n");
@@ -278,7 +233,7 @@ public class ReportServiceImpl implements ReportService {
                     eventName.length() > 20 ? eventName.substring(0, 19) + "..." : eventName,
                     bookingsCount,
                     seatsBooked,
-                    formatRupee(eventRevenue, false)));
+                    String.format("%.2f", eventRevenue)));
         }
 
         report.append("======================================================\n");
@@ -292,7 +247,7 @@ public class ReportServiceImpl implements ReportService {
         StringBuilder report = new StringBuilder();
         report.append("======================================================\n");
         report.append("              OVERALL USER REPORT\n");
-        report.append("======================================================\n\n");
+        report.append("======================================================\n");
 
         if (customers.isEmpty()) {
             report.append("No customers found.\n");
@@ -326,7 +281,7 @@ public class ReportServiceImpl implements ReportService {
                     email.length() > 23 ? email.substring(0, 22) + "..." : email,
                     eventsBooked,
                     seatsBooked,
-                    formatRupee(amountPaid, true)));
+                    String.format("%.2f", amountPaid)));
         }
 
         report.append("======================================================\n");
@@ -378,7 +333,7 @@ public class ReportServiceImpl implements ReportService {
                     email.length() > 23 ? email.substring(0, 22) + "..." : email,
                     eventsCreated,
                     cancelled,
-                    formatRupee(totalRevenue, true)));
+                    String.format("%.2f", totalRevenue)));
         }
 
         report.append("======================================================\n");
