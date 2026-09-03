@@ -1,4 +1,4 @@
-package com.eventmanagement.dao;
+package com.eventmanagement.collectionsDB;
 
 import com.eventmanagement.model.Booking;
 
@@ -27,20 +27,25 @@ public class BookingRepository {
 
     public List<Booking> findByUserId(int userId) {
         List<Booking> result = new ArrayList<>();
+
         for (Booking booking : bookingStore.values()) {
             if (booking.getUserId() == userId) {
                 result.add(booking);
             }
         }
+
         return result;
     }
 
     public List<Booking> findByEventId(int eventId) {
         List<Booking> result = new ArrayList<>();
+
         for (Booking booking : bookingStore.values()) {
+
             if (booking.getEventId() == eventId) {
                 result.add(booking);
             }
+
         }
         return result;
     }

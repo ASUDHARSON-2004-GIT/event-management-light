@@ -32,8 +32,8 @@ public class AdminController {
     private final Session session;
 
     public AdminController(UserService userService, EventService eventService, CategoryService categoryService,
-                           BookingService bookingService, ReportService reportService,
-                           ConsoleHelper consoleHelper, Session session) {
+                           BookingService bookingService, ReportService reportService, ConsoleHelper consoleHelper,
+                           Session session) {
         this.userService = userService;
         this.eventService = eventService;
         this.categoryService = categoryService;
@@ -44,7 +44,6 @@ public class AdminController {
     }
 
     public void showMenu() {
-
         boolean stayInMenu = true;
 
         while (stayInMenu) {
@@ -98,19 +97,20 @@ public class AdminController {
 
         while (stayInSubMenu) {
             List<User> users = userService.getAllUsersByRole(role);
-
             consoleHelper.printHeading("MANAGE " + role + "S");
+
             if (users.isEmpty()) {
                 consoleHelper.printLine("No users found in this role.");
             } else {
                 consoleHelper.printSeparator();
-                System.out.printf("%-6s %-18s %-25s %-12s %-10s%n",
-                        "ID", "Name", "Email", "Phone", "Status");
+                System.out.printf("%-6s %-18s %-25s %-12s %-10s%n", "ID", "Name", "Email", "Phone", "Status");
                 consoleHelper.printSeparator();
+
                 for (User user : users) {
                     System.out.printf("%-6d %-18s %-25s %-12s %-10s%n",
                             user.getUserId(), user.getName(), user.getEmail(), user.getPhone(), user.getStatus());
                 }
+
                 consoleHelper.printSeparator();
             }
 
@@ -127,14 +127,17 @@ public class AdminController {
                         userService.setUserStatusActive(activateId);
                         consoleHelper.printLine("User activated.");
                         break;
+
                     case 2:
                         int deactivateId = consoleHelper.readInt("Enter user id to deactivate: ");
                         userService.setUserStatusInactive(deactivateId);
                         consoleHelper.printLine("User deactivated.");
                         break;
+
                     case 3:
                         stayInSubMenu = false;
                         break;
+
                     default:
                         consoleHelper.printLine("Invalid choice, please try again.");
                 }
@@ -145,13 +148,12 @@ public class AdminController {
     }
 
     private void manageEvents() {
-
         boolean stayInSubMenu = true;
 
         while (stayInSubMenu) {
             List<Event> events = eventService.getAllEvents();
-
             consoleHelper.printHeading("MANAGE EVENTS");
+
             if (events.isEmpty()) {
                 consoleHelper.printLine("No events found.");
             } else {
@@ -159,12 +161,14 @@ public class AdminController {
                 System.out.printf("%-4s %-30s %-12s %-12s %-22s %-12s %-6s %-6s %-8s %-10s%n",
                         "ID", "Event", "Organizer", "Date", "Venue", "City", "Total", "Avail", "Price", "Status");
                 consoleHelper.printSeparator();
+
                 for (Event event : events) {
-                    System.out.printf("%-4d %-30s %-12d %-12s %-22s %-12s %-6d %-6d %-8.2f %-10s%n",
+                    System.out.printf( "%-4d %-30s %-12d %-12s %-22s %-6d %-6d %-8.2f %-10s%n",
                             event.getEventId(), event.getEventName(), event.getOrganizerId(), event.getEventDate(),
-                            event.getVenue(), event.getCity(), event.getTotalSeats(), event.getAvailableSeats(),
-                            event.getTicketPrice(), event.getStatus());
+                            event.getVenue(), event.getTotalSeats(), event.getAvailableSeats(),
+                            event.getTicketPrice(), event.getStatus() );
                 }
+
                 consoleHelper.printSeparator();
             }
 
@@ -181,15 +185,18 @@ public class AdminController {
                         eventService.changeEventStatus(cancelId, EventStatus.CANCELLED);
                         consoleHelper.printLine("Event cancelled.");
                         break;
+
                     case 2:
                         int deleteId = consoleHelper.readInt("Enter event id to delete: ");
                         Event event = eventService.getEventById(deleteId);
                         eventService.deleteEvent(deleteId, event.getOrganizerId());
                         consoleHelper.printLine("Event deleted.");
                         break;
+
                     case 3:
                         stayInSubMenu = false;
                         break;
+
                     default:
                         consoleHelper.printLine("Invalid choice, please try again.");
                 }
@@ -202,23 +209,25 @@ public class AdminController {
     }
 
     private void manageCategories() {
-
         boolean stayInSubMenu = true;
 
         while (stayInSubMenu) {
             List<Category> categories = categoryService.getAllCategories();
 
             consoleHelper.printHeading("MANAGE CATEGORIES");
+
             if (categories.isEmpty()) {
                 consoleHelper.printLine("No categories found.");
             } else {
                 consoleHelper.printSeparator();
                 System.out.printf("%-6s %-16s %-30s%n", "ID", "Name", "Description");
                 consoleHelper.printSeparator();
+
                 for (Category category : categories) {
                     System.out.printf("%-6d %-16s %-30s%n",
                             category.getCategoryId(), category.getCategoryName(), category.getDescription());
                 }
+
                 consoleHelper.printSeparator();
             }
 
@@ -234,23 +243,27 @@ public class AdminController {
                     case 1:
                         String name = consoleHelper.readLine("Enter category name: ");
                         String description = consoleHelper.readLine("Enter category description: ");
+
                         categoryService.addCategory(name, description);
                         consoleHelper.printLine("Category added.");
                         break;
+
                     case 2:
                         int updateId = consoleHelper.readInt("Enter category id to update: ");
                         Category existingCategory = categoryService.getCategoryById(updateId);
 
-                        consoleHelper.printLine("Leave a field blank and press enter to keep its current value.");
+                        consoleHelper.printLine("Leave the field blank and press enter to keep its current value.");
 
                         String newName = consoleHelper.readLine(
                                 "Enter new category name (" + existingCategory.getCategoryName() + "): ");
+
                         if (ValidationUtil.isEmpty(newName)) {
                             newName = existingCategory.getCategoryName();
                         }
 
                         String newDescription = consoleHelper.readLine(
                                 "Enter new category description (" + existingCategory.getDescription() + "): ");
+
                         if (ValidationUtil.isEmpty(newDescription)) {
                             newDescription = existingCategory.getDescription();
                         }
@@ -258,14 +271,17 @@ public class AdminController {
                         categoryService.updateCategory(updateId, newName, newDescription);
                         consoleHelper.printLine("Category updated.");
                         break;
+
                     case 3:
                         int deleteId = consoleHelper.readInt("Enter category id to delete: ");
                         categoryService.deleteCategory(deleteId);
                         consoleHelper.printLine("Category deleted.");
                         break;
+
                     case 4:
                         stayInSubMenu = false;
                         break;
+
                     default:
                         consoleHelper.printLine("Invalid choice, please try again.");
                 }
@@ -287,16 +303,19 @@ public class AdminController {
         System.out.printf("%-12s %-8s %-8s %-8s %-10s %-10s%n",
                 "Booking ID", "User ID", "Event ID", "Seats", "Amount", "Status");
         consoleHelper.printSeparator();
+
         for (Booking booking : bookings) {
             System.out.printf("%-12d %-8d %-8d %-8d %-10.2f %-10s%n",
                     booking.getBookingId(), booking.getUserId(), booking.getEventId(),
                     booking.getSeatsBooked(), booking.getTotalAmount(), booking.getBookingStatus());
         }
+
         consoleHelper.printSeparator();
     }
 
     private void viewSystemReport() {
         boolean stayInReportMenu = true;
+
         while (stayInReportMenu) {
             consoleHelper.printHeading("ADMIN REPORTS");
             consoleHelper.printLine("1. View User Report");
@@ -315,29 +334,36 @@ public class AdminController {
                         String userReport = reportService.generateUserReport(userId);
                         consoleHelper.printLine(userReport);
                         break;
+
                     case 2:
                         int organizerId = consoleHelper.readInt("Enter Organizer ID: ");
                         consoleHelper.printLine("");
                         consoleHelper.printLine("Report:");
                         consoleHelper.printLine("");
+
                         String organizerReport = reportService.generateOrganizerReport(organizerId);
                         consoleHelper.printLine(organizerReport);
                         break;
+
                     case 3:
                         String overallUserReport = reportService.generateOverallUserReport();
                         consoleHelper.printLine(overallUserReport);
                         break;
+
                     case 4:
                         String overallOrganizerReport = reportService.generateOverallOrganizerReport();
                         consoleHelper.printLine(overallOrganizerReport);
                         break;
+
                     case 5:
                         String overallSystemReport = reportService.generateSystemReport();
                         consoleHelper.printLine(overallSystemReport);
                         break;
+
                     case 6:
                         stayInReportMenu = false;
                         break;
+
                     default:
                         consoleHelper.printLine("Invalid choice, please try again.");
                 }

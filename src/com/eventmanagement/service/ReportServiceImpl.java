@@ -69,9 +69,11 @@ public class ReportServiceImpl implements ReportService {
         bookingLines.append("-----------------------------------------------------\n");
 
         for (Booking booking : bookings) {
+
             if (booking.getBookingStatus() != BookingStatus.CONFIRMED) {
                 continue;
             }
+
             totalBookingsCount++;
             seatsBooked += booking.getSeatsBooked();
             totalRevenue += booking.getTotalAmount();
@@ -80,7 +82,7 @@ public class ReportServiceImpl implements ReportService {
             try {
                 User customer = userService.getUserById(booking.getUserId());
                 customerName = customer.getName();
-            } catch (UserNotFoundException ignored) {
+            } catch (UserNotFoundException ignore) {
 
             }
 
@@ -107,11 +109,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String generateUserReport(int userId) throws UserNotFoundException {
         User user = userService.getUserById(userId);
+
         if (user.getRole() != Role.CUSTOMER) {
             throw new UserNotFoundException("User with ID " + userId + " is not a Customer.");
         }
 
         List<Booking> userBookings = bookingService.getBookingsByUser(userId);
+
         int totalBookings = userBookings.size();
         int confirmedCount = 0;
         int cancelledCount = 0;
@@ -127,27 +131,30 @@ public class ReportServiceImpl implements ReportService {
         StringBuilder report = new StringBuilder();
         report.append("======================================================\n");
         report.append("                 CUSTOMER REPORT\n");
-        report.append("======================================================\n\n");
+        report.append("======================================================\n");
         report.append("Customer ID       : ").append(user.getUserId()).append("\n");
         report.append("Name              : ").append(user.getName()).append("\n");
         report.append("Email             : ").append(user.getEmail()).append("\n");
         report.append("Phone             : ").append(user.getPhone()).append("\n");
         report.append("Status            : ").append(user.getStatus()).append("\n\n");
-        report.append("---------------- Booking Summary ----------------\n\n");
+        report.append("---------------- Booking Summary ----------------\n");
         report.append("Total Bookings    : ").append(totalBookings).append("\n");
         report.append("Confirmed         : ").append(confirmedCount).append("\n");
         report.append("Cancelled         : ").append(cancelledCount).append("\n\n");
-        report.append("---------------- Booking History ----------------\n\n");
+        report.append("---------------- Booking History ----------------\n");
         report.append(String.format("%-12s %-24s %-7s %-9s %s%n", "Booking ID", "Event", "Seats", "Amount", "Status"));
         report.append("----------------------------------------------------------------\n");
 
         for (Booking booking : userBookings) {
             String eventName = "Unknown";
+
             try {
                 Event event = eventService.getEventById(booking.getEventId());
                 eventName = event.getEventName();
             } catch (EventNotFoundException ignored) {
+                //Exception ignored
             }
+
             report.append(String.format("%-12d %-24s %-7d %-9.2f %s%n",
                     booking.getBookingId(),
                     eventName.length() > 22 ? eventName.substring(0, 21) + "..." : eventName,
@@ -163,6 +170,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public String generateOrganizerReport(int organizerId) throws UserNotFoundException {
         User organizer = userService.getUserById(organizerId);
+
         if (organizer.getRole() != Role.ORGANIZER) {
             throw new UserNotFoundException("User with ID " + organizerId + " is not an Organizer.");
         }
@@ -174,6 +182,7 @@ public class ReportServiceImpl implements ReportService {
         int cancelledCount = 0;
 
         for (Event event : organizerEvents) {
+
             if (event.getStatus() == EventStatus.UPCOMING || event.getStatus() == EventStatus.ONGOING) {
                 upcomingCount++;
             } else if (event.getStatus() == EventStatus.COMPLETED) {
@@ -185,7 +194,9 @@ public class ReportServiceImpl implements ReportService {
 
         double totalRevenue = 0;
         for (Event event : organizerEvents) {
+
             List<Booking> bookings = bookingService.getBookingsByEvent(event.getEventId());
+
             for (Booking booking : bookings) {
                 if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
                     totalRevenue += booking.getTotalAmount();
@@ -210,7 +221,8 @@ public class ReportServiceImpl implements ReportService {
         report.append("---------------- Revenue Summary ---------------\n\n");
         report.append("Total Revenue     : ").append(String.format("%.2f", totalRevenue)).append("\n\n");
         report.append("---------------- Event Performance -------------\n\n");
-        report.append(String.format("%-10s %-22s %-10s %-7s %s%n", "Event ID", "Event Name", "Bookings", "Seats", "Revenue"));
+        report.append(String.format("%-10s %-22s %-10s %-7s %s%n",
+                "Event ID", "Event Name", "Bookings", "Seats", "Revenue"));
         report.append("----------------------------------------------------------------\n");
 
         for (Event event : organizerEvents) {

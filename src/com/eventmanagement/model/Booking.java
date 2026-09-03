@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 
 public class Booking {
 
-    private int bookingId;
-    private int userId;
-    private int eventId;
-    private int seatsBooked;
-    private double totalAmount;
-    private LocalDateTime bookingTimestamp;
+    private final int bookingId;
+    private final int userId;
+    private final int eventId;
+    private final int seatsBooked;
+    private final double totalAmount;
+    private final LocalDateTime bookingTimestamp;
     private BookingStatus bookingStatus;
 
     public Booking(int bookingId, int userId, int eventId, int seatsBooked, double totalAmount) {

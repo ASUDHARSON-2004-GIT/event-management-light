@@ -1,7 +1,7 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.dao.BookingRepository;
-import com.eventmanagement.dao.EventRepository;
+import com.eventmanagement.collectionsDB.BookingRepository;
+import com.eventmanagement.collectionsDB.EventRepository;
 import com.eventmanagement.exception.BookingNotFoundException;
 import com.eventmanagement.exception.EventNotFoundException;
 import com.eventmanagement.exception.InsufficientSeatsException;
@@ -42,10 +42,6 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidBookingException("This event is no longer open for booking.");
         }
 
-        // We lock on the event object so two bookings for the same event
-        // cannot both read the same available seat count at once.
-        // This is the in-memory equivalent of a database transaction
-        // around checking seats, reducing seats and inserting the booking.
         synchronized (event) {
 
             if (seatsRequested > event.getAvailableSeats()) {
@@ -56,19 +52,15 @@ public class BookingServiceImpl implements BookingService {
             int seatsBeforeBooking = event.getAvailableSeats();
             double totalAmount = seatsRequested * event.getTicketPrice();
 
-            // Step one, reduce the available seats.
             event.setAvailableSeats(event.getAvailableSeats() - seatsRequested);
 
             try {
-                // Step two, create and save the booking record.
                 Booking booking = new Booking(bookingIdGenerator.nextId(), userId, eventId, seatsRequested, totalAmount);
                 bookingRepository.save(booking);
                 eventRepository.save(event);
                 return booking;
 
             } catch (RuntimeException unexpectedError) {
-                // If anything above failed unexpectedly, put the seats back.
-                // This mirrors a ROLLBACK in a real database transaction.
                 event.setAvailableSeats(seatsBeforeBooking);
                 throw new InvalidBookingException("Booking could not be completed, please try again.");
             }

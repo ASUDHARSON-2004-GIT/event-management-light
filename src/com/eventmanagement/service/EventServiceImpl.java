@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.dao.EventRepository;
+import com.eventmanagement.collectionsDB.EventRepository;
 import com.eventmanagement.exception.AccessDeniedException;
 import com.eventmanagement.exception.CategoryNotFoundException;
 import com.eventmanagement.exception.EventNotFoundException;
@@ -29,18 +29,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event addEvent(int organizerId, int categoryId, String eventName, String description, String venue,
-                          String city, String address, LocalDate eventDate, LocalTime eventTime,
-                          int totalSeats, double ticketPrice)
+    public Event addEvent(int organizerId, int categoryId, String eventName, String description,
+                          String venue, String address, LocalDate eventDate,
+                          LocalTime eventTime, int totalSeats, double ticketPrice)
             throws ValidationException, CategoryNotFoundException {
 
-        validateEventFields(eventName, venue, city, eventDate, totalSeats, ticketPrice);
+        validateEventFields(eventName, venue, eventDate, totalSeats, ticketPrice);
 
-        // Make sure the category actually exists before attaching the event to it.
         categoryService.getCategoryById(categoryId);
 
         Event event = new Event(eventIdGenerator.nextId(), organizerId, categoryId, eventName, description,
-                venue, city, address, eventDate, eventTime, totalSeats, ticketPrice);
+                venue, address, eventDate, eventTime, totalSeats, ticketPrice);
 
         eventRepository.save(event);
         return event;
@@ -48,14 +47,17 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Event> getEventsByOrganizer(int organizerId) {
+
         List<Event> events = eventRepository.findByOrganizerId(organizerId);
+
         events.forEach(this::refreshEventStatusIfNeeded);
+
         return events;
     }
 
     @Override
     public void updateEvent(int eventId, int organizerId, String eventName, String description, String venue,
-                            String city, String address, LocalDate eventDate, LocalTime eventTime,
+                            String address, LocalDate eventDate, LocalTime eventTime,
                             double ticketPrice)
             throws EventNotFoundException, ValidationException, AccessDeniedException {
 
@@ -65,15 +67,15 @@ public class EventServiceImpl implements EventService {
         if (ValidationUtil.isEmpty(eventName)) {
             throw new ValidationException("Event name cannot be empty.");
         }
+
         if (ValidationUtil.isEmpty(venue)) {
             throw new ValidationException("Venue cannot be empty.");
         }
-        if (ValidationUtil.isEmpty(city)) {
-            throw new ValidationException("City cannot be empty.");
-        }
+
         if (!ValidationUtil.isFutureOrTodayDate(eventDate)) {
             throw new ValidationException("Event date cannot be in the past.");
         }
+
         if (!ValidationUtil.isNonNegativeNumber(ticketPrice)) {
             throw new ValidationException("Ticket price cannot be negative.");
         }
@@ -81,7 +83,6 @@ public class EventServiceImpl implements EventService {
         event.setEventName(eventName);
         event.setDescription(description);
         event.setVenue(venue);
-        event.setCity(city);
         event.setAddress(address);
         event.setEventDate(eventDate);
         event.setEventTime(eventTime);
@@ -101,6 +102,7 @@ public class EventServiceImpl implements EventService {
     public Event getEventById(int eventId) throws EventNotFoundException {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("No event found with id " + eventId));
+
         refreshEventStatusIfNeeded(event);
         return event;
     }
@@ -108,7 +110,9 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> getAllEvents() {
         List<Event> events = eventRepository.findAll();
+
         events.forEach(this::refreshEventStatusIfNeeded);
+
         return events;
     }
 
@@ -116,6 +120,7 @@ public class EventServiceImpl implements EventService {
     public List<Event> searchByName(String keyword) {
         List<Event> result = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
+
         for (Event event : getAllEvents()) {
             boolean nameMatches = event.getEventName().toLowerCase().contains(lowerKeyword);
             boolean descriptionMatches = event.getDescription() != null
@@ -131,6 +136,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> searchByCategory(int categoryId) {
         List<Event> result = new ArrayList<>();
+
         for (Event event : getAllEvents()) {
             if (event.getCategoryId() == categoryId) {
                 result.add(event);
@@ -142,6 +148,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<Event> searchByDate(LocalDate date) {
         List<Event> result = new ArrayList<>();
+
         for (Event event : getAllEvents()) {
             if (event.getEventDate().equals(date)) {
                 result.add(event);
@@ -154,13 +161,12 @@ public class EventServiceImpl implements EventService {
     public List<Event> searchByVenue(String keyword) {
         List<Event> result = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
+
         for (Event event : getAllEvents()) {
             boolean venueMatches = event.getVenue().toLowerCase().contains(lowerKeyword);
-            boolean cityMatches = event.getCity() != null && event.getCity().toLowerCase().contains(lowerKeyword);
-            boolean addressMatches = event.getAddress() != null
-                    && event.getAddress().toLowerCase().contains(lowerKeyword);
+            boolean addressMatches = event.getAddress().toLowerCase().contains(lowerKeyword);
 
-            if (venueMatches || cityMatches || addressMatches) {
+            if (venueMatches || addressMatches) {
                 result.add(event);
             }
         }
@@ -171,13 +177,13 @@ public class EventServiceImpl implements EventService {
     public void changeEventStatus(int eventId, EventStatus newStatus) throws EventNotFoundException {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("No event found with id " + eventId));
+
         event.setStatus(newStatus);
         eventRepository.save(event);
     }
 
     @Override
     public void refreshEventStatusIfNeeded(Event event) {
-        // Once an event is cancelled by an admin or organizer, it should stay cancelled.
         if (event.getStatus() == EventStatus.CANCELLED) {
             return;
         }
@@ -192,23 +198,25 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private void validateEventFields(String eventName, String venue, String city, LocalDate eventDate,
+    private void validateEventFields(String eventName, String venue, LocalDate eventDate,
                                      int totalSeats, double ticketPrice) throws ValidationException {
+
         if (ValidationUtil.isEmpty(eventName)) {
             throw new ValidationException("Event name cannot be empty.");
         }
+
         if (ValidationUtil.isEmpty(venue)) {
             throw new ValidationException("Venue cannot be empty.");
         }
-        if (ValidationUtil.isEmpty(city)) {
-            throw new ValidationException("City cannot be empty.");
-        }
+
         if (!ValidationUtil.isFutureOrTodayDate(eventDate)) {
             throw new ValidationException("Event date cannot be in the past.");
         }
+
         if (totalSeats <= 0) {
             throw new ValidationException("Total seats must be greater than zero.");
         }
+
         if (!ValidationUtil.isNonNegativeNumber(ticketPrice)) {
             throw new ValidationException("Ticket price cannot be negative.");
         }

@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.dao.UserRepository;
+import com.eventmanagement.collectionsDB.UserRepository;
 import com.eventmanagement.exception.InvalidCredentialException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Role;
@@ -27,15 +27,19 @@ public class AuthServiceImpl implements AuthService {
         if (ValidationUtil.isEmpty(name)) {
             throw new ValidationException("Name cannot be empty.");
         }
+
         if (!ValidationUtil.isValidEmail(email)) {
             throw new ValidationException("Please enter a valid email address.");
         }
+
         if (!ValidationUtil.isValidPhone(phone)) {
             throw new ValidationException("Phone number must be exactly 10 digits.");
         }
+
         if (ValidationUtil.isEmpty(password)) {
             throw new ValidationException("Password cannot be empty.");
         }
+
         if (userRepository.existsByEmail(email)) {
             throw new ValidationException("An account with this email already exists.");
         }

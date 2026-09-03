@@ -20,12 +20,11 @@ public class AuthController {
         this.session = session;
     }
 
-    // Returns true as long as the application should keep running.
     public boolean showMainMenu() {
 
         consoleHelper.printHeading("EVENT MANAGEMENT SYSTEM");
-        consoleHelper.printLine("1. Register");
-        consoleHelper.printLine("2. Login");
+        consoleHelper.printLine("1. Register (don't have an account)");
+        consoleHelper.printLine("2. Login (already have an account)");
         consoleHelper.printLine("3. Exit");
 
         int choice = consoleHelper.readInt("Enter your choice: ");
@@ -34,12 +33,15 @@ public class AuthController {
             case 1:
                 handleRegister();
                 return true;
+
             case 2:
                 handleLogin();
                 return true;
+
             case 3:
                 consoleHelper.printLine("Thank you for using the Event Management System.");
                 return false;
+
             default:
                 consoleHelper.printLine("Invalid choice, please try again.");
                 return true;
@@ -47,13 +49,14 @@ public class AuthController {
     }
 
     private void handleRegister() {
-
         consoleHelper.printLine("Register as:");
         consoleHelper.printLine("1. Customer");
         consoleHelper.printLine("2. Organizer");
 
         int roleChoice = consoleHelper.readInt("Enter your choice: ");
+
         Role role;
+
         if (roleChoice == 1) {
             role = Role.CUSTOMER;
         } else if (roleChoice == 2) {
@@ -77,16 +80,17 @@ public class AuthController {
     }
 
     private void handleLogin() {
-
         String email = consoleHelper.readLine("Enter your email: ");
         String password = consoleHelper.readLine("Enter your password: ");
 
         try {
             User user = authService.login(email, password);
+
             session.login(user);
             consoleHelper.printLine("Login successful. Welcome " + user.getName());
         } catch (InvalidCredentialException e) {
             consoleHelper.printLine("Login failed: " + e.getMessage());
         }
+
     }
 }

@@ -1,16 +1,12 @@
-package com.eventmanagement.dao;
+package com.eventmanagement.collectionsDB;
 
 import com.eventmanagement.model.Category;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class CategoryRepository {
 
-    private final Map<Integer, Category> categoryStore = new LinkedHashMap<>();
+    private final Map<Integer, Category> categoryStore = new HashMap<>();
 
     public Category save(Category category) {
         categoryStore.put(category.getCategoryId(), category);
@@ -22,7 +18,8 @@ public class CategoryRepository {
     }
 
     public List<Category> findAll() {
-        return new ArrayList<>(categoryStore.values());
+        return categoryStore.values().stream().
+                sorted(Comparator.comparingInt(Category::getCategoryId)).toList();
     }
 
     public void deleteById(int categoryId) {

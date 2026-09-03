@@ -14,14 +14,13 @@ import java.util.List;
 public interface EventService {
 
     Event addEvent(int organizerId, int categoryId, String eventName, String description, String venue,
-                   String city, String address, LocalDate eventDate, LocalTime eventTime,
-                   int totalSeats, double ticketPrice)
+                   String address, LocalDate eventDate, LocalTime eventTime, int totalSeats, double ticketPrice)
             throws ValidationException, CategoryNotFoundException;
 
     List<Event> getEventsByOrganizer(int organizerId);
 
     void updateEvent(int eventId, int organizerId, String eventName, String description, String venue,
-                     String city, String address, LocalDate eventDate, LocalTime eventTime, double ticketPrice)
+                     String address, LocalDate eventDate, LocalTime eventTime, double ticketPrice)
             throws EventNotFoundException, ValidationException, AccessDeniedException;
 
     void deleteEvent(int eventId, int organizerId) throws EventNotFoundException, AccessDeniedException;
@@ -40,6 +39,5 @@ public interface EventService {
 
     void changeEventStatus(int eventId, EventStatus newStatus) throws EventNotFoundException;
 
-    // Refreshes an event status automatically based on its date, unless it was cancelled by hand.
     void refreshEventStatusIfNeeded(Event event);
 }

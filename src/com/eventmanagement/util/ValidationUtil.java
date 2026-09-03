@@ -3,8 +3,6 @@ package com.eventmanagement.util;
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
-// All the input checking logic lives here so that the service
-// classes do not repeat the same checks again and again.
 public class ValidationUtil {
 
     private static final Pattern EMAIL_PATTERN =
@@ -36,10 +34,6 @@ public class ValidationUtil {
             return false;
         }
         return !date.isBefore(LocalDate.now());
-    }
-
-    public static boolean isPositiveNumber(double value) {
-        return value > 0;
     }
 
     public static boolean isNonNegativeNumber(double value) {

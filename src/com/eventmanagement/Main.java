@@ -5,10 +5,10 @@ import com.eventmanagement.controller.AdminController;
 import com.eventmanagement.controller.AuthController;
 import com.eventmanagement.controller.CustomerController;
 import com.eventmanagement.controller.OrganizerController;
-import com.eventmanagement.dao.BookingRepository;
-import com.eventmanagement.dao.CategoryRepository;
-import com.eventmanagement.dao.EventRepository;
-import com.eventmanagement.dao.UserRepository;
+import com.eventmanagement.collectionsDB.BookingRepository;
+import com.eventmanagement.collectionsDB.CategoryRepository;
+import com.eventmanagement.collectionsDB.EventRepository;
+import com.eventmanagement.collectionsDB.UserRepository;
 import com.eventmanagement.model.Role;
 import com.eventmanagement.model.User;
 import com.eventmanagement.service.AuthService;
@@ -67,7 +67,6 @@ public class Main {
         boolean applicationRunning = true;
 
         while (applicationRunning) {
-
             if (!session.isLoggedIn()) {
                 applicationRunning = authController.showMainMenu();
                 continue;

@@ -21,7 +21,7 @@ public class Event {
     private EventStatus status;
 
     public Event(int eventId, int organizerId, int categoryId, String eventName, String description,
-                 String venue, String city, String address, LocalDate eventDate, LocalTime eventTime,
+                 String venue, String address, LocalDate eventDate, LocalTime eventTime,
                  int totalSeats, double ticketPrice) {
         this.eventId = eventId;
         this.organizerId = organizerId;
@@ -29,7 +29,6 @@ public class Event {
         this.eventName = eventName;
         this.description = description;
         this.venue = venue;
-        this.city = city;
         this.address = address;
         this.eventDate = eventDate;
         this.eventTime = eventTime;
@@ -77,14 +76,6 @@ public class Event {
 
     public void setVenue(String venue) {
         this.venue = venue;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getAddress() {

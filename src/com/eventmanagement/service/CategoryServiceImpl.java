@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.dao.CategoryRepository;
+import com.eventmanagement.collectionsDB.CategoryRepository;
 import com.eventmanagement.exception.CategoryNotFoundException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Category;
@@ -21,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(String categoryName, String description) throws ValidationException {
+
         if (ValidationUtil.isEmpty(categoryName)) {
             throw new ValidationException("Category name cannot be empty.");
         }
@@ -52,6 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(int categoryId) throws CategoryNotFoundException {
+
         if (!categoryRepository.existsById(categoryId)) {
             throw new CategoryNotFoundException("No category found with id " + categoryId);
         }
@@ -60,6 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(int categoryId) throws CategoryNotFoundException {
+
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("No category found with id " + categoryId));
     }

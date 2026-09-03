@@ -38,7 +38,6 @@ public class CustomerController {
     }
 
     public void showMenu() {
-
         boolean stayInMenu = true;
 
         while (stayInMenu) {
@@ -62,32 +61,41 @@ public class CustomerController {
                 case 1:
                     viewAvailableEvents();
                     break;
+
                 case 2:
                     searchEvents();
                     break;
+
                 case 3:
                     viewEventDetails();
                     break;
+
                 case 4:
                     bookEvent();
                     break;
+
                 case 5:
                     viewMyBookings();
                     break;
+
                 case 6:
                     cancelBooking();
                     break;
+
                 case 7:
                     viewProfile();
                     break;
+
                 case 8:
                     updateProfile();
                     break;
+
                 case 9:
                     session.logout();
                     consoleHelper.printLine("You have been logged out.");
                     stayInMenu = false;
                     break;
+
                 default:
                     consoleHelper.printLine("Invalid choice, please try again.");
             }
@@ -98,20 +106,23 @@ public class CustomerController {
         List<Event> events = eventService.getAllEvents();
         printEventTable(events);
     }
+
     private void printEventTable(List<Event> events) {
+
         if (events.isEmpty()) {
             consoleHelper.printLine("No events found.");
             return;
         }
 
         consoleHelper.printSeparator();
-        System.out.printf("%-5s %-30s %-12s %-22s %-12s %-8s %-10s%n",
-                "ID", "Event", "Date", "Venue", "City", "Avail", "Price");
+        System.out.printf("%-5s %-32s %-12s %-22s %-8s %-10s%n",
+                "| ID", "| Event", "| Date", "| Venue", "| Avail", "| Price");
         consoleHelper.printSeparator();
+
         for (Event event : events) {
-            System.out.printf("%-5d %-30s %-12s %-22s %-12s %-8d %-10.2f%n",
+            System.out.printf("%-5d %-32s %-12s %-22s %-8d %-10.2f%n",
                     event.getEventId(), event.getEventName(), event.getEventDate(),
-                    event.getVenue(), event.getCity(), event.getAvailableSeats(), event.getTicketPrice());
+                    event.getVenue(), event.getAvailableSeats(), event.getTicketPrice());
         }
         consoleHelper.printSeparator();
     }
@@ -131,12 +142,15 @@ public class CustomerController {
                 String nameKeyword = consoleHelper.readLine("Enter event name keyword: ");
                 results = eventService.searchByName(nameKeyword);
                 break;
+
             case 2:
                 int categoryId = consoleHelper.readInt("Enter category id: ");
                 results = eventService.searchByCategory(categoryId);
                 break;
+
             case 3:
                 String dateText = consoleHelper.readLine("Enter date (yyyy-mm-dd): ");
+
                 try {
                     LocalDate date = LocalDate.parse(dateText);
                     results = eventService.searchByDate(date);
@@ -144,11 +158,14 @@ public class CustomerController {
                     consoleHelper.printLine("Invalid date format.");
                     return;
                 }
+
                 break;
+
             case 4:
                 String venueKeyword = consoleHelper.readLine("Enter venue keyword: ");
                 results = eventService.searchByVenue(venueKeyword);
                 break;
+
             default:
                 consoleHelper.printLine("Invalid choice.");
                 return;
@@ -159,6 +176,7 @@ public class CustomerController {
 
     private void viewEventDetails() {
         int eventId = consoleHelper.readInt("Enter event id: ");
+
         try {
             Event event = eventService.getEventById(eventId);
             consoleHelper.printSeparator();
@@ -167,6 +185,7 @@ public class CustomerController {
         } catch (EventNotFoundException e) {
             consoleHelper.printLine(e.getMessage());
         }
+
     }
 
     private void bookEvent() {
@@ -175,23 +194,20 @@ public class CustomerController {
 
         try {
             Event event = eventService.getEventById(eventId);
-
-            // The seats are reserved right away so no one else can take them
-            // while this customer is deciding whether to pay.
             Booking booking = bookingService.bookEvent(session.getCurrentUser().getUserId(), eventId, seats);
 
             consoleHelper.printHeading("BOOKING SUMMARY");
             consoleHelper.printLine("Booking ID    : " + booking.getBookingId());
             consoleHelper.printLine("Event         : " + event.getEventName());
-            consoleHelper.printLine("Venue         : " + event.getVenue() + ", " + event.getCity());
+            consoleHelper.printLine("Venue         : " + event.getVenue());
             consoleHelper.printLine("Date and Time : " + event.getEventDate() + " " + event.getEventTime());
             consoleHelper.printLine("Seats Booked  : " + booking.getSeatsBooked());
             consoleHelper.printLine("Amount to Pay : " + booking.getTotalAmount());
             consoleHelper.printSeparator();
 
-            String paymentChoice = consoleHelper.readLine("Proceed with payment? (yes/no): ");
+            String paymentChoice = consoleHelper.readLine("Proceed with payment? (y/n): ");
 
-            if (paymentChoice.equalsIgnoreCase("yes") || paymentChoice.equalsIgnoreCase("y")) {
+            if (paymentChoice.equalsIgnoreCase("y")) {
                 consoleHelper.printLine("Payment successful. Your booking is confirmed.");
             } else {
                 bookingService.cancelBooking(booking.getBookingId(), session.getCurrentUser().getUserId());
@@ -215,15 +231,18 @@ public class CustomerController {
 
         consoleHelper.printSeparator();
         System.out.printf("%-12s %-20s %-8s %-10s %-10s%n",
-                "Booking ID", "Event", "Seats", "Amount", "Status");
+                          "Booking ID", "Event", "Seats", "Amount", "Status");
         consoleHelper.printSeparator();
+
         for (Booking booking : bookings) {
             String eventName;
+
             try {
                 eventName = eventService.getEventById(booking.getEventId()).getEventName();
             } catch (EventNotFoundException e) {
                 eventName = "(event no longer exists)";
             }
+
             System.out.printf("%-12d %-20s %-8d %-10.2f %-10s%n",
                     booking.getBookingId(), eventName, booking.getSeatsBooked(),
                     booking.getTotalAmount(), booking.getBookingStatus());
@@ -244,6 +263,7 @@ public class CustomerController {
     }
 
     private void viewProfile() {
+
         try {
             User user = userService.getUserById(session.getCurrentUser().getUserId());
             consoleHelper.printSeparator();
@@ -252,6 +272,7 @@ public class CustomerController {
         } catch (UserNotFoundException e) {
             consoleHelper.printLine(e.getMessage());
         }
+
     }
 
     private void updateProfile() {
@@ -259,13 +280,14 @@ public class CustomerController {
             User currentUser = userService.getUserById(session.getCurrentUser().getUserId());
 
             consoleHelper.printLine("Leave a field blank and press enter to keep its current value.");
-
             String name = consoleHelper.readLine("Enter new name (" + currentUser.getName() + "): ");
+
             if (ValidationUtil.isEmpty(name)) {
                 name = currentUser.getName();
             }
 
             String phone = consoleHelper.readLine("Enter new phone number (" + currentUser.getPhone() + "): ");
+
             if (ValidationUtil.isEmpty(phone)) {
                 phone = currentUser.getPhone();
             }

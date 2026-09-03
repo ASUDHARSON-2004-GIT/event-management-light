@@ -1,16 +1,12 @@
-package com.eventmanagement.dao;
+package com.eventmanagement.collectionsDB;
 
 import com.eventmanagement.model.Event;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class EventRepository {
 
-    private final Map<Integer, Event> eventStore = new LinkedHashMap<>();
+    private final Map<Integer, Event> eventStore = new HashMap<>();
 
     public Event save(Event event) {
         eventStore.put(event.getEventId(), event);
@@ -22,11 +18,13 @@ public class EventRepository {
     }
 
     public List<Event> findAll() {
-        return new ArrayList<>(eventStore.values());
+        return eventStore.values().stream()
+                .sorted(Comparator.comparingInt(Event::getEventId)).toList();
     }
 
     public List<Event> findByOrganizerId(int organizerId) {
         List<Event> result = new ArrayList<>();
+
         for (Event event : eventStore.values()) {
             if (event.getOrganizerId() == organizerId) {
                 result.add(event);
@@ -39,7 +37,4 @@ public class EventRepository {
         eventStore.remove(eventId);
     }
 
-    public boolean existsById(int eventId) {
-        return eventStore.containsKey(eventId);
-    }
 }

@@ -63,26 +63,33 @@ public class OrganizerController {
                 case 1:
                     createEvent();
                     break;
+
                 case 2:
                     viewMyEvents();
                     break;
+
                 case 3:
                     updateEvent();
                     break;
+
                 case 4:
                     deleteEvent();
                     break;
+
                 case 5:
                     viewEventBookings();
                     break;
+
                 case 6:
                     viewEventRevenueReport();
                     break;
+
                 case 7:
                     session.logout();
                     consoleHelper.printLine("You have been logged out.");
                     stayInMenu = false;
                     break;
+
                 default:
                     consoleHelper.printLine("Invalid choice, please try again.");
             }
@@ -91,13 +98,13 @@ public class OrganizerController {
 
     private void createEvent() {
 
-        showAvailableCategories();
-
         String eventName = consoleHelper.readLine("Enter event name: ");
         String description = consoleHelper.readLine("Enter description: ");
+
+        showAvailableCategories();//Showing available categories can helps user to choose the category
+
         int categoryId = consoleHelper.readInt("Enter category id: ");
         String venue = consoleHelper.readLine("Enter venue name: ");
-        String city = consoleHelper.readLine("Enter city: ");
         String address = consoleHelper.readLine("Enter address : ");
         String dateText = consoleHelper.readLine("Enter event date (yyyy-mm-dd): ");
         String timeText = consoleHelper.readLine("Enter event time (HH:mm): ");
@@ -109,7 +116,7 @@ public class OrganizerController {
             LocalTime eventTime = LocalTime.parse(timeText);
 
             Event event = eventService.addEvent(session.getCurrentUser().getUserId(), categoryId, eventName,
-                    description, venue, city, address, eventDate, eventTime, totalSeats, ticketPrice);
+                    description, venue, address, eventDate, eventTime, totalSeats, ticketPrice);
 
             consoleHelper.printLine("Event created successfully with id " + event.getEventId());
 
@@ -123,6 +130,7 @@ public class OrganizerController {
     private void showAvailableCategories() {
         List<Category> categories = categoryService.getAllCategories();
         consoleHelper.printLine("Available categories:");
+
         for (Category category : categories) {
             consoleHelper.printLine(category.toString());
         }
@@ -140,10 +148,11 @@ public class OrganizerController {
         System.out.printf("%-4s %-30s %-12s %-8s %-22s %-12s %-6s %-6s %-8s %-10s%n",
                 "ID", "Event", "Date", "Time", "Venue", "City", "Total", "Avail", "Price", "Status");
         consoleHelper.printSeparator();
+
         for (Event event : events) {
-            System.out.printf("%-4d %-30s %-12s %-8s %-22s %-12s %-6d %-6d %-8.2f %-10s%n",
+            System.out.printf("%-4d %-30s %-12s %-8s %-22s %-6d %-6d %-8.2f %-10s%n",
                     event.getEventId(), event.getEventName(), event.getEventDate(), event.getEventTime(),
-                    event.getVenue(), event.getCity(), event.getTotalSeats(), event.getAvailableSeats(),
+                    event.getVenue(), event.getTotalSeats(), event.getAvailableSeats(),
                     event.getTicketPrice(), event.getStatus());
         }
         consoleHelper.printSeparator();
@@ -175,11 +184,6 @@ public class OrganizerController {
                 venue = existingEvent.getVenue();
             }
 
-            String city = consoleHelper.readLine(
-                    "Enter new city (" + existingEvent.getCity() + "): ");
-            if (ValidationUtil.isEmpty(city)) {
-                city = existingEvent.getCity();
-            }
 
             String address = consoleHelper.readLine(
                     "Enter new address (" + existingEvent.getAddress() + "): ");
@@ -203,7 +207,7 @@ public class OrganizerController {
                     ? existingEvent.getTicketPrice() : Double.parseDouble(priceText);
 
             eventService.updateEvent(eventId, session.getCurrentUser().getUserId(), eventName, description,
-                    venue, city, address, eventDate, eventTime, ticketPrice);
+                    venue, address, eventDate, eventTime, ticketPrice);
 
             consoleHelper.printLine("Event updated successfully.");
 
@@ -230,12 +234,14 @@ public class OrganizerController {
 
         try {
             Event event = eventService.getEventById(eventId);
+
             if (event.getOrganizerId() != session.getCurrentUser().getUserId()) {
                 consoleHelper.printLine("You are not allowed to view bookings for an event you do not own.");
                 return;
             }
 
             List<Booking> bookings = bookingService.getBookingsByEvent(eventId);
+
             if (bookings.isEmpty()) {
                 consoleHelper.printLine("No bookings yet for this event.");
                 return;
@@ -245,6 +251,7 @@ public class OrganizerController {
             System.out.printf("%-12s %-10s %-8s %-10s %-10s%n",
                     "Booking ID", "User ID", "Seats", "Amount", "Status");
             consoleHelper.printSeparator();
+
             for (Booking booking : bookings) {
                 System.out.printf("%-12d %-10d %-8d %-10.2f %-10s%n",
                         booking.getBookingId(), booking.getUserId(), booking.getSeatsBooked(),
@@ -262,6 +269,7 @@ public class OrganizerController {
 
         try {
             Event event = eventService.getEventById(eventId);
+
             if (event.getOrganizerId() != session.getCurrentUser().getUserId()) {
                 consoleHelper.printLine("You are not allowed to view a report for an event you do not own.");
                 return;

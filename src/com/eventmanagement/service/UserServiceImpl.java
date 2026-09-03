@@ -1,12 +1,11 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.dao.UserRepository;
+import com.eventmanagement.collectionsDB.UserRepository;
 import com.eventmanagement.exception.UserNotFoundException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Role;
 import com.eventmanagement.model.User;
 import com.eventmanagement.model.UserStatus;
-import com.eventmanagement.util.PasswordUtil;
 import com.eventmanagement.util.ValidationUtil;
 
 import java.util.List;
@@ -28,6 +27,7 @@ public class UserServiceImpl implements UserService {
         if (ValidationUtil.isEmpty(name)) {
             throw new ValidationException("Name cannot be empty.");
         }
+
         if (!ValidationUtil.isValidPhone(phone)) {
             throw new ValidationException("Phone number must be exactly 10 digits.");
         }
