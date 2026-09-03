@@ -98,43 +98,52 @@ public class AdminController {
         while (stayInSubMenu) {
             List<User> users = userService.getAllUsersByRole(role);
             consoleHelper.printHeading("MANAGE " + role + "S");
-
-            if (users.isEmpty()) {
-                consoleHelper.printLine("No users found in this role.");
-            } else {
-                consoleHelper.printSeparator();
-                System.out.printf("%-6s %-18s %-25s %-12s %-10s%n", "ID", "Name", "Email", "Phone", "Status");
-                consoleHelper.printSeparator();
-
-                for (User user : users) {
-                    System.out.printf("%-6d %-18s %-25s %-12s %-10s%n",
-                            user.getUserId(), user.getName(), user.getEmail(), user.getPhone(), user.getStatus());
-                }
-
-                consoleHelper.printSeparator();
-            }
-
-            consoleHelper.printLine("1. Activate a user");
-            consoleHelper.printLine("2. Deactivate a user");
-            consoleHelper.printLine("3. Back to admin menu");
+            consoleHelper.printLine("1. View all users");
+            consoleHelper.printLine("2. Activate a user");
+            consoleHelper.printLine("3. Deactivate a user");
+            consoleHelper.printLine("4. Delete a user");
+            consoleHelper.printLine("5. Back to admin menu");
 
             int choice = consoleHelper.readInt("Enter your choice: ");
 
             try {
                 switch (choice) {
                     case 1:
+                        if (users.isEmpty()) {
+                            consoleHelper.printLine("No users found in this role.");
+                        } else {
+                            consoleHelper.printSeparator();
+                            System.out.printf("%-6s %-18s %-25s %-12s %-10s%n", "ID", "Name", "Email", "Phone", "Status");
+                            consoleHelper.printSeparator();
+
+                            for (User user : users) {
+                                System.out.printf("%-6d %-18s %-25s %-12s %-10s%n",
+                                        user.getUserId(), user.getName(), user.getEmail(), user.getPhone(), user.getStatus());
+                            }
+
+                            consoleHelper.printSeparator();
+                        }
+                        break;
+
+                    case 2:
                         int activateId = consoleHelper.readInt("Enter user id to activate: ");
                         userService.setUserStatusActive(activateId);
                         consoleHelper.printLine("User activated.");
                         break;
 
-                    case 2:
+                    case 3:
                         int deactivateId = consoleHelper.readInt("Enter user id to deactivate: ");
                         userService.setUserStatusInactive(deactivateId);
                         consoleHelper.printLine("User deactivated.");
                         break;
 
-                    case 3:
+                    case 4:
+                        int deleteId = consoleHelper.readInt("Enter user id to delete");
+                        userService.deleteUser(deleteId);
+                        consoleHelper.printLine("User Deleted");
+                        break;
+
+                    case 5:
                         stayInSubMenu = false;
                         break;
 

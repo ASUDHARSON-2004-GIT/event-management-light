@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.collectionsDB.UserRepository;
+import com.eventmanagement.repository.UserRepository;
 import com.eventmanagement.exception.InvalidCredentialException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Role;
@@ -36,8 +36,9 @@ public class AuthServiceImpl implements AuthService {
             throw new ValidationException("Phone number must be exactly 10 digits.");
         }
 
-        if (ValidationUtil.isEmpty(password)) {
-            throw new ValidationException("Password cannot be empty.");
+        if (!ValidationUtil.isValidPassword(password)) {
+            throw new ValidationException("Password must be at least 6 characters and include uppercase, " +
+                    "lowercase, digit, and special character (@#!$&*).");
         }
 
         if (userRepository.existsByEmail(email)) {

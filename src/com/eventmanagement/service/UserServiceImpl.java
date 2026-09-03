@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.collectionsDB.UserRepository;
+import com.eventmanagement.repository.UserRepository;
 import com.eventmanagement.exception.UserNotFoundException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Role;
@@ -66,4 +66,10 @@ public class UserServiceImpl implements UserService {
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
     }
+
+    public void deleteUser(int userId) throws  UserNotFoundException{
+        User user = getUserById(userId);
+        userRepository.deleteUser(user.getUserId());
+    }
+
 }

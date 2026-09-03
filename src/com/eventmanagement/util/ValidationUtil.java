@@ -11,6 +11,9 @@ public class ValidationUtil {
     private static final Pattern PHONE_PATTERN =
             Pattern.compile("^[0-9]{10}$");
 
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#!$&*]).{6,}$");
+
     public static boolean isEmpty(String value) {
         return value == null || value.trim().isEmpty();
     }
@@ -27,6 +30,13 @@ public class ValidationUtil {
             return false;
         }
         return PHONE_PATTERN.matcher(phone).matches();
+    }
+
+    public static boolean isValidPassword(String password){
+        if(isEmpty(password)){
+            return false;
+        }
+        return PASSWORD_PATTERN.matcher(password).matches();
     }
 
     public static boolean isFutureOrTodayDate(LocalDate date) {

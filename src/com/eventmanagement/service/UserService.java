@@ -20,4 +20,7 @@ public interface UserService {
     void setUserStatusActive(int userId) throws UserNotFoundException;
 
     void setUserStatusInactive(int userId) throws UserNotFoundException;
+
+    void deleteUser(int userId) throws UserNotFoundException;
+
 }

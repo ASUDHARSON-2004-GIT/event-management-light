@@ -1,4 +1,4 @@
-package com.eventmanagement.collectionsDB;
+package com.eventmanagement.repository;
 
 import com.eventmanagement.model.Booking;
 

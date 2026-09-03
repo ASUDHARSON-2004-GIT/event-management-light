@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.collectionsDB.CategoryRepository;
+import com.eventmanagement.repository.CategoryRepository;
 import com.eventmanagement.exception.CategoryNotFoundException;
 import com.eventmanagement.exception.ValidationException;
 import com.eventmanagement.model.Category;

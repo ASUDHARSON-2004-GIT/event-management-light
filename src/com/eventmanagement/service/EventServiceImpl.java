@@ -1,6 +1,6 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.collectionsDB.EventRepository;
+import com.eventmanagement.repository.EventRepository;
 import com.eventmanagement.exception.AccessDeniedException;
 import com.eventmanagement.exception.CategoryNotFoundException;
 import com.eventmanagement.exception.EventNotFoundException;

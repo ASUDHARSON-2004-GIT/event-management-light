@@ -1,7 +1,7 @@
 package com.eventmanagement.service;
 
-import com.eventmanagement.collectionsDB.BookingRepository;
-import com.eventmanagement.collectionsDB.EventRepository;
+import com.eventmanagement.repository.BookingRepository;
+import com.eventmanagement.repository.EventRepository;
 import com.eventmanagement.exception.BookingNotFoundException;
 import com.eventmanagement.exception.EventNotFoundException;
 import com.eventmanagement.exception.InsufficientSeatsException;

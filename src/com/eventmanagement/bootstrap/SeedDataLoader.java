@@ -32,7 +32,7 @@ public class SeedDataLoader {
 
     private static void seedDefaultAdmin(AuthService authService) {
         try {
-            authService.register("SUDHARSON", "sudharson@gmail.com", "9999999999", "2004", Role.ADMIN);
+            authService.register("SUDHARSON", "sudharson@gmail.com", "9999999999", "Sudhar@2004", Role.ADMIN);
         } catch (ValidationException e) {
             System.out.println("Could not create default admin account: " + e.getMessage());
         }
@@ -42,13 +42,13 @@ public class SeedDataLoader {
                                        BookingService bookingService) {
         try {
             User dharson = authService.register(
-                    "Dharson", "dharson@gmail.com", "9876543210", "1234", Role.ORGANIZER);
+                    "Dharson", "dharson@gmail.com", "9876543210", "Dharson@123", Role.ORGANIZER);
             User meena = authService.register(
-                    "Meena", "meena@gmail.com", "9876500000", "1234", Role.ORGANIZER);
+                    "Meena", "meena@gmail.com", "9876500000", "Meena@123", Role.ORGANIZER);
             User sasi = authService.register(
-                    "Sasi", "sasi@gmail.com", "9123456789", "1234", Role.CUSTOMER);
+                    "Sasi", "sasi@gmail.com", "9123456789", "Sasi@123", Role.CUSTOMER);
             User karthik = authService.register(
-                    "Karthik", "karthik@gmail.com", "9123456780", "1234", Role.CUSTOMER);
+                    "Karthik", "karthik@gmail.com", "9123456780", "Karthik@123", Role.CUSTOMER);
 
             Event javaWorkshop = eventService.addEvent(dharson.getUserId(), 2, "Java Full Stack Workshop",
                     "Hands on workshop covering core java, spring boot and react",

@@ -1,4 +1,4 @@
-package com.eventmanagement.collectionsDB;
+package com.eventmanagement.repository;
 
 import com.eventmanagement.model.User;
 
@@ -41,6 +41,10 @@ public class UserRepository {
         }
 
         return result;
+    }
+
+    public void deleteUser(int userId){
+        userStore.remove(userId);
     }
 
 }
