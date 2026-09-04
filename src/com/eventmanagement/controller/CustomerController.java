@@ -14,6 +14,7 @@ import com.eventmanagement.service.BookingService;
 import com.eventmanagement.service.EventService;
 import com.eventmanagement.service.UserService;
 import com.eventmanagement.util.ConsoleHelper;
+import com.eventmanagement.util.DateUtil;
 import com.eventmanagement.util.Session;
 import com.eventmanagement.util.ValidationUtil;
 
@@ -121,7 +122,7 @@ public class CustomerController {
 
         for (Event event : events) {
             System.out.printf("%-5d %-32s %-12s %-22s %-8d %-10.2f%n",
-                    event.getEventId(), event.getEventName(), event.getEventDate(),
+                    event.getEventId(), event.getEventName(), DateUtil.formatDate(event.getEventDate()),
                     event.getVenue(), event.getAvailableSeats(), event.getTicketPrice());
         }
         consoleHelper.printSeparator();
@@ -149,10 +150,10 @@ public class CustomerController {
                 break;
 
             case 3:
-                String dateText = consoleHelper.readLine("Enter date (yyyy-mm-dd): ");
+                String dateText = consoleHelper.readLine("Enter date (dd-MM-yyyy): ");
 
                 try {
-                    LocalDate date = LocalDate.parse(dateText);
+                    LocalDate date = DateUtil.parseDate(dateText);
                     results = eventService.searchByDate(date);
                 } catch (Exception e) {
                     consoleHelper.printLine("Invalid date format.");
@@ -200,7 +201,7 @@ public class CustomerController {
             consoleHelper.printLine("Booking ID    : " + booking.getBookingId());
             consoleHelper.printLine("Event         : " + event.getEventName());
             consoleHelper.printLine("Venue         : " + event.getVenue());
-            consoleHelper.printLine("Date and Time : " + event.getEventDate() + " " + event.getEventTime());
+            consoleHelper.printLine("Date and Time : " + DateUtil.formatDate(event.getEventDate()) + " " + event.getEventTime());
             consoleHelper.printLine("Seats Booked  : " + booking.getSeatsBooked());
             consoleHelper.printLine("Amount to Pay : " + booking.getTotalAmount());
             consoleHelper.printSeparator();

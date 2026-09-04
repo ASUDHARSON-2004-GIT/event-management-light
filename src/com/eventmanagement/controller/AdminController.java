@@ -16,6 +16,7 @@ import com.eventmanagement.service.EventService;
 import com.eventmanagement.service.ReportService;
 import com.eventmanagement.service.UserService;
 import com.eventmanagement.util.ConsoleHelper;
+import com.eventmanagement.util.DateUtil;
 import com.eventmanagement.util.Session;
 import com.eventmanagement.util.ValidationUtil;
 
@@ -173,7 +174,7 @@ public class AdminController {
 
                 for (Event event : events) {
                     System.out.printf( "%-4d %-30s %-12d %-12s %-22s %-6d %-6d %-8.2f %-10s%n",
-                            event.getEventId(), event.getEventName(), event.getOrganizerId(), event.getEventDate(),
+                            event.getEventId(), event.getEventName(), event.getOrganizerId(), DateUtil.formatDate(event.getEventDate()),
                             event.getVenue(), event.getTotalSeats(), event.getAvailableSeats(),
                             event.getTicketPrice(), event.getStatus() );
                 }

@@ -1,5 +1,6 @@
 package com.eventmanagement.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -8,11 +9,11 @@ public class PasswordUtil {
     public static String hashPassword(String plainPassword) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(plainPassword.getBytes());
+            byte[] hashBytes = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
 
             StringBuilder builder = new StringBuilder();
-            for (byte singleByte : hashBytes) {
-                String hex = Integer.toHexString(0xff & singleByte);
+            for (byte b : hashBytes) {
+                String hex = Integer.toHexString(0xff & b);
                 if (hex.length() == 1) {
                     builder.append('0');
                 }

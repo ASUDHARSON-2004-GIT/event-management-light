@@ -1,16 +1,13 @@
 package com.eventmanagement.repository;
 
 import com.eventmanagement.model.Booking;
+import com.eventmanagement.model.Category;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class BookingRepository {
 
-    private final Map<Integer, Booking> bookingStore = new LinkedHashMap<>();
+    private final Map<Integer, Booking> bookingStore = new HashMap<>();
 
     public Booking save(Booking booking) {
         bookingStore.put(booking.getBookingId(), booking);
@@ -22,7 +19,9 @@ public class BookingRepository {
     }
 
     public List<Booking> findAll() {
-        return new ArrayList<>(bookingStore.values());
+        return bookingStore.values().stream()
+                .sorted(Comparator.comparingInt(Booking::getBookingId))
+                .toList();
     }
 
     public List<Booking> findByUserId(int userId) {
@@ -34,7 +33,9 @@ public class BookingRepository {
             }
         }
 
-        return result;
+        return result.stream()
+                .sorted(Comparator.comparingInt(Booking::getBookingId))
+                .toList();
     }
 
     public List<Booking> findByEventId(int eventId) {
@@ -47,6 +48,8 @@ public class BookingRepository {
             }
 
         }
-        return result;
+        return result.stream()
+                .sorted(Comparator.comparingInt(Booking::getBookingId))
+                .toList();
     }
 }

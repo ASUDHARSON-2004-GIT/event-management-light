@@ -1,5 +1,7 @@
 package com.eventmanagement.model;
 
+import com.eventmanagement.util.DateUtil;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -11,7 +13,6 @@ public class Event {
     private String eventName;
     private String description;
     private String venue;
-    private String city;
     private String address;
     private LocalDate eventDate;
     private LocalTime eventTime;
@@ -140,9 +141,8 @@ public class Event {
                 "\nEvent Name      : " + eventName +
                 "\nDescription     : " + description +
                 "\nVenue           : " + venue +
-                "\nCity            : " + city +
                 "\nAddress         : " + address +
-                "\nDate            : " + eventDate +
+                "\nDate            : " + DateUtil.formatDate(eventDate) +
                 "\nTime            : " + eventTime +
                 "\nTotal Seats     : " + totalSeats +
                 "\nAvailable Seats : " + availableSeats +

@@ -13,6 +13,7 @@ import com.eventmanagement.service.CategoryService;
 import com.eventmanagement.service.EventService;
 import com.eventmanagement.service.ReportService;
 import com.eventmanagement.util.ConsoleHelper;
+import com.eventmanagement.util.DateUtil;
 import com.eventmanagement.util.Session;
 import com.eventmanagement.util.ValidationUtil;
 
@@ -101,18 +102,18 @@ public class OrganizerController {
         String eventName = consoleHelper.readLine("Enter event name: ");
         String description = consoleHelper.readLine("Enter description: ");
 
-        showAvailableCategories();//Showing available categories can helps user to choose the category
+        showAvailableCategories();//Showing available categories can help user to choose the category
 
         int categoryId = consoleHelper.readInt("Enter category id: ");
         String venue = consoleHelper.readLine("Enter venue name: ");
         String address = consoleHelper.readLine("Enter address : ");
-        String dateText = consoleHelper.readLine("Enter event date (yyyy-mm-dd): ");
+        String dateText = consoleHelper.readLine("Enter event date (dd-MM-yyyy): ");
         String timeText = consoleHelper.readLine("Enter event time (HH:mm): ");
         int totalSeats = consoleHelper.readInt("Enter total seats: ");
         double ticketPrice = consoleHelper.readDouble("Enter ticket price: ");
 
         try {
-            LocalDate eventDate = LocalDate.parse(dateText);
+            LocalDate eventDate = DateUtil.parseDate(dateText);
             LocalTime eventTime = LocalTime.parse(timeText);
 
             Event event = eventService.addEvent(session.getCurrentUser().getUserId(), categoryId, eventName,
@@ -151,7 +152,7 @@ public class OrganizerController {
 
         for (Event event : events) {
             System.out.printf("%-4d %-30s %-12s %-8s %-22s %-6d %-6d %-8.2f %-10s%n",
-                    event.getEventId(), event.getEventName(), event.getEventDate(), event.getEventTime(),
+                    event.getEventId(), event.getEventName(), DateUtil.formatDate(event.getEventDate()), event.getEventTime(),
                     event.getVenue(), event.getTotalSeats(), event.getAvailableSeats(),
                     event.getTicketPrice(), event.getStatus());
         }
@@ -192,9 +193,9 @@ public class OrganizerController {
             }
 
             String dateText = consoleHelper.readLine(
-                    "Enter new event date, yyyy-mm-dd (" + existingEvent.getEventDate() + "): ");
+                    "Enter new event date, dd-MM-yyyy (" + DateUtil.formatDate(existingEvent.getEventDate()) + "): ");
             LocalDate eventDate = ValidationUtil.isEmpty(dateText)
-                    ? existingEvent.getEventDate() : LocalDate.parse(dateText);
+                    ? existingEvent.getEventDate() : DateUtil.parseDate(dateText);
 
             String timeText = consoleHelper.readLine(
                     "Enter new event time, HH:mm (" + existingEvent.getEventTime() + "): ");
