@@ -1,7 +1,6 @@
 package com.eventmanagement.repository;
 
 import com.eventmanagement.model.Booking;
-import com.eventmanagement.model.Category;
 
 import java.util.*;
 
